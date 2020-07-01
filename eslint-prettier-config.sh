@@ -51,30 +51,6 @@ if [ -f ".eslintrc.js" -o -f ".eslintrc.yaml" -o -f ".eslintrc.yml" -o -f ".esli
 fi
 finished=false
 
-# Max Line Length Prompt
-while ! $finished; do
-  read -p "What max line length do you want to set for ESLint and Prettier? (Recommendation: 80)"
-  if [[ $REPLY =~ ^[0-9]{2,3}$ ]]; then
-    max_len_val=$REPLY
-    finished=true
-    echo
-  else
-    echo -e "${YELLOW}Please choose a max length of two or three digits, e.g. 80 or 100 or 120${NC}"
-  fi
-done
-
-# Trailing Commas Prompt
-echo "What style of trailing commas do you want to enforce with Prettier?"
-echo -e "${YELLOW}>>>>> See https://prettier.io/docs/en/options.html#trailing-commas for more details.${NC}"
-select trailing_comma_pref in "none" "es5" "all"; do
-  case $trailing_comma_pref in
-    none ) break;;
-    es5 ) break;;
-    all ) break;;
-  esac
-done
-echo
-
 # Checks for existing prettierrc files
 if [ -f ".prettierrc.js" -o -f "prettier.config.js" -o -f ".prettierrc.yaml" -o -f ".prettierrc.yml" -o -f ".prettierrc.json" -o -f ".prettierrc.toml" -o -f ".prettierrc" ]; then
   echo -e "${RED}Existing Prettier config file(s) found${NC}"
@@ -121,36 +97,36 @@ else
   > ".eslintrc${config_extension}" # truncates existing file (or creates empty)
 
   echo ${config_opening}'
-  "extends": [
-    "airbnb",
-    "plugin:prettier/recommended",
-    "prettier/react"
-  ],
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "jest": true,
-    "node": true
-  },
-  "rules": {
-    "jsx-a11y/href-no-hash": ["off"],
-    "react/jsx-filename-extension": ["warn", { "extensions": [".js", ".jsx"] }],
-    "max-len": [
-      "warn",
-      {
-        "code": '${max_len_val}',
-        "tabWidth": 2,
-        "comments": '${max_len_val}',
-        "ignoreComments": false,
-        "ignoreTrailingComments": true,
-        "ignoreUrls": true,
-        "ignoreStrings": true,
-        "ignoreTemplateLiterals": true,
-        "ignoreRegExpLiterals": true
-      }
-    ]
-  }
+  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jest": true,
+        "node": true
+    },
+    "rules": {
+        "semi": 2,
+        "sort-keys": "error",
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/jsx-props-no-spreading": 0,
+        "import/extensions": [1, "always"],
+        "jsx-a11y/href-no-hash": ["off"],
+        "max-params": [2],
+        "max-len": [
+            "warn",
+            {
+                "code": 120,
+                "comments": 120,
+                "ignoreComments": false,
+                "ignoreTrailingComments": true,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true,
+                "ignoreRegExpLiterals": true
+            }
+        ]
+    }
 }' >> .eslintrc${config_extension}
 fi
 
@@ -162,9 +138,17 @@ else
   > .prettierrc${config_extension} # truncates existing file (or creates empty)
 
   echo ${config_opening}'
-  "printWidth": '${max_len_val}',
+  "printWidth": 120,
+  "trailingComma": "none",
+  "useTabs": false,
+  "tabWidth": 4,
+  "semi": true,
   "singleQuote": true,
-  "trailingComma": "'${trailing_comma_pref}'"
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "arrowParens": "always",
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": true
 }' >> .prettierrc${config_extension}
 fi
 
