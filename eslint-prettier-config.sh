@@ -148,7 +148,8 @@ else
   "jsxBracketSameLine": false,
   "arrowParens": "always",
   "quoteProps": "as-needed",
-  "jsxSingleQuote": true
+  "jsxSingleQuote": true,
+  "endOfLine": "lf"
 }' >> .prettierrc${config_extension}
 fi
 
